@@ -1,0 +1,56 @@
+PDF COMPETITIVE INDEX Y ESO
+```{r}
+linkGIT="https://github.com/sergioromero1917/Data-Estad-sitica-2/raw/master/PDF%20competivines%20report.xlsx"
+data2=import(linkGIT,which = 2)
+data3=import(linkGIT,which = 3)
+data4=import(linkGIT,which = 4)
+data5=import(linkGIT,which = 5)
+data6=import(linkGIT,which = 6)
+data7=import(linkGIT,which = 7)
+```
+
+```{r}
+library(openxlsx)
+linkGIT="https://github.com/sergioromero1917/Data-Estad-sitica-2/raw/master/PDF%20competivines%20report.xlsx"
+f1=c(4:74)
+f=c(3:73)
+
+data2=read.xlsx('https://github.com/sergioromero1917/Data-Estad-sitica-2/raw/master/PDF%20competivines%20report.xlsx',sheet = 2, rows = f1,colNames = T, rowNames = F)
+data3=read.xlsx('https://github.com/sergioromero1917/Data-Estad-sitica-2/raw/master/PDF%20competivines%20report.xlsx',sheet = 3, rows = f,colNames = T, rowNames = F)
+data4=read.xlsx('https://github.com/sergioromero1917/Data-Estad-sitica-2/raw/master/PDF%20competivines%20report.xlsx',sheet = 4, rows = f,colNames = T, rowNames = F)
+data5=read.xlsx('https://github.com/sergioromero1917/Data-Estad-sitica-2/raw/master/PDF%20competivines%20report.xlsx',sheet = 5, rows = f,colNames = T, rowNames = F)
+data6=read.xlsx('https://github.com/sergioromero1917/Data-Estad-sitica-2/raw/master/PDF%20competivines%20report.xlsx',sheet = 6, rows = f,colNames = T, rowNames = F)
+data7=read.xlsx('https://github.com/sergioromero1917/Data-Estad-sitica-2/raw/master/PDF%20competivines%20report.xlsx',sheet = 7, rows = f,colNames = T, rowNames = F)
+```
+
+```{r}
+data23=rbind(data2,data3)
+data45=rbind(data4,data5)
+data67=rbind(data6,data7)
+```
+
+```{r}
+data2345=merge(data23,data45,by="Economy")
+dataFINAL=merge(data2345,data67,by="Economy")
+```
+```{r}
+dataFINAL[,c(2,4,6,8,10,12,14,16,18,20,22,24)]=NULL
+```
+
+```{r}
+newNAMES=c("Country","Institutions","Infrastructure","ICT adoption","Macroeconomic stability","Health","Skills","Product market","Labour market","Financial system","Market size","Business dynamism","Innovation capability")
+names(dataFINAL)=newNAMES
+```
+
+```{r}
+library(stringr)
+dataFINAL[,-c(1)]=lapply(dataFINAL[,-c(1)], as.numeric)
+```
+
+```{r}
+str(dataFINAL)
+```
+```{r}
+proyectoEsta=merge(datafinal,dataFINAL)
+```
+
