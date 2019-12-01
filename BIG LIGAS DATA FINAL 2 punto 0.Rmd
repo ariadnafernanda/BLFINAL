@@ -1,0 +1,262 @@
+##### DATA #####
+PDF COMPETITIVE INDEX Y ESO
+```{r}
+library(openxlsx)
+linkGIT="https://github.com/sergioromero1917/Data-Estad-sitica-2/raw/master/PDF%20competivines%20report.xlsx"
+f1=c(4:74)
+f=c(3:73)
+
+comp_rep <- function(x,y) {
+  read.xlsx('https://github.com/sergioromero1917/Data-Estad-sitica-2/raw/master/PDF%20competivines%20report.xlsx',sheet = x, rows = y,colNames = T, rowNames = F)}
+data1=rbind(comp_rep(2,f1),comp_rep(3,f))
+data2=rbind(comp_rep(4,f),comp_rep(5,f))
+data3=rbind(comp_rep(6,f),comp_rep(7,f))
+
+MyMerge1 <- function(x, y){
+   df <- merge(x, y, by= "Economy", all.x= TRUE, all.y= TRUE)
+  return(df)} 
+
+compindex=Reduce(MyMerge1, list(data1,data2,data3))
+```
+
+```{r}
+compindex[,c(2,4,6,8,10,12,14,16,18,20,22,24)]=NULL
+```
+
+```{r}
+newNAMES=c("Country","Institutions","Infrastructure","ICT adoption","Macroeconomic stability","Health","Skills","Product market","Labour market","Financial system","Market size","Business dynamism","Innovation capability")
+names(compindex)=newNAMES
+```
+
+```{r}
+library(stringr)
+compindex[,-c(1)]=lapply(compindex[,-c(1)], as.numeric)
+```
+
+```{r}
+str(compindex)
+```
+DATA DE PETROLEO EXPORTADO
+```{r}
+#Petroleo
+#Exportacion de petroleo
+library(htmltab)
+oilexport_link="https://www.cia.gov/library/publications/the-world-factbook/fields/262rank.html"
+oilexport_path='//*[@id="rankOrder"]'
+oilexport=htmltab(doc=oilexport_link,which=oilexport_path)
+```
+DATA DE ELECTRICIDAD EXPORTADA
+```{r}
+electricitylink="https://www.cia.gov/library/publications/the-world-factbook/fields/254rank.html"
+electricitypath='//*[@id="rankOrder"]'
+electricity=htmltab(doc=electricitylink,which=electricitypath)
+```
+DATA DE INVERSION EXTRANJERA EN EXTERIOR
+```{r}
+IEDlink="https://www.cia.gov/library/publications/the-world-factbook/fields/248rank.html"
+IEDpath='//*[@id="rankOrder"]'
+stock_IED=htmltab(doc=IEDlink,which=IEDpath)
+```
+DATA DE CRECIMIENTO DE PRODUCCION INDUSTRIAL
+```{r}
+linkindustry="https://www.cia.gov/library/publications/the-world-factbook/fields/217rank.html"
+industrypath='//*[@id="rankOrder"]'
+industry_growth=htmltab(doc=linkindustry,which=industrypath)
+```
+DATA DE SUPERAVIT PRESUPUESTARIO
+```{r}
+superavitlink="https://www.cia.gov/library/publications/the-world-factbook/fields/226rank.html"
+superavitpath='//*[@id="rankOrder"]'
+superavit=htmltab(doc=superavitlink,which=superavitpath)
+```
+DATA TASA INFLACION
+```{r}
+inflationlink="https://www.cia.gov/library/publications/the-world-factbook/fields/229rank.html"
+inflationpath='//*[@id="rankOrder"]'
+inflation_rate=htmltab(doc=inflationlink,which=inflationpath)
+```
+DATA DEUDA EXTERNA DE PAISES
+```{r}
+debtlink="https://www.cia.gov/library/publications/the-world-factbook/fields/246rank.html"
+debtpath='//*[@id="rankOrder"]'
+debt=htmltab(doc=debtlink,which=debtpath)
+```
+DATA MILITAR
+```{r}
+#Militar
+#Gastos militares del PBI por país [BBDD CIA]:
+library(htmltab)
+pbi_militar= "https://www.cia.gov/library/publications/the-world-factbook/fields/330rank.html"
+path_militar= '//*[@id="rankOrder"]'
+militar= htmltab(doc=pbi_militar, which=path_militar)
+```
+DATA RECAUDACION DE IMPUESTOS
+```{r}
+#Economico
+#Impuestos y otros Ingresos
+tax_link= "https://www.cia.gov/library/publications/the-world-factbook/fields/225rank.html"
+tax_path= '//*[@id="rankOrder"]'
+tax= htmltab (doc= tax_link, which= tax_path)
+```
+DATA DE EXPORTACION DE GAS NATURAL
+```{r}
+gaslink="https://www.cia.gov/library/publications/the-world-factbook/fields/271rank.html"
+gaspath='//*[@id="rankOrder"]'
+gas_export=htmltab(doc=gaslink,which=gaspath)
+```
+DATA POLITICA
+```{r}
+#Politico
+#Indice de Democracia
+demolink="https://en.wikipedia.org/wiki/Democracy_Index"
+demopath='//*[@id="mw-content-text"]/div/table[2]'
+demo_index= htmltab (doc= demolink, which= demopath)
+```
+DATA WORLD POWER INDEX (DEPENDIENTE)
+```{r}
+#WPI
+library(rio)
+link="https://github.com/Joaquin18Araujo2034/Proyecto-Final-Estadistica-2/raw/master/WORLD%20POWER%20INDEX%202017.xlsx"
+wpi=import(link)
+names(wpi)[names(wpi)=="Pais"]="Country"
+```
+DATA TECNOLOGIA
+```{r}
+library(rio)
+link="https://github.com/ariadnafernanda/BLFINAL/raw/master/indicador%20alta%20tecnologia.xls"
+datatec=import(link)
+str(datatec)
+```
+###### LIMPIEZA DE DATOS #####
+```{r}
+#Limpieza Exportacion de Petroleo
+oilexport$Rank=NULL
+oilexport$`Date of Information`=NULL
+names(oilexport)[names(oilexport)=="(bbl/day)"]="Barrels by day exported"
+oilexport$`Barrels by day exported`=gsub("[,]","",oilexport$`Barrels by day exported`)
+oilexport$`Barrels by day exported`=as.numeric(oilexport$`Barrels by day exported`)
+str(oilexport)
+#Limpieza electricidad
+electricity=electricity[,-c(1,4)]
+names(electricity)[names(electricity)=="(kWh)"]="Electricty_exported"
+electricity$Electricty_exported=gsub("[,]","",electricity$Electricty_exported)
+electricity$Electricty_exported=as.numeric(electricity$Electricty_exported)
+str(electricity)
+#Limpieza Inversion extranjera en exterior
+stock_IED=stock_IED[,-c(1,4)]
+names(stock_IED)[names(stock_IED)=="Stock of direct foreign investment - abroad"]="stock_DFI"
+stock_IED$stock_DFI=gsub("[,]","",stock_IED$stock_DFI)
+stock_IED$stock_DFI=gsub("[$]","",stock_IED$stock_DFI)
+stock_IED$stock_DFI=as.numeric(stock_IED$stock_DFI)
+str(stock_IED)
+#Limpieza de crecimiento industrial
+industry_growth=industry_growth[,-c(1,4)]
+names(industry_growth)[names(industry_growth)=="(%)"]="Industry_Growth_Rate"
+industry_growth$Industry_Growth_Rate=as.numeric(industry_growth$Industry_Growth_Rate)
+str(industry_growth)
+#Limpieza Superavit presupuestario
+superavit=superavit[,-c(1,4)]
+names(superavit)[names(superavit)=="(% (of GDP))"]="Superavit_as_percentage_of_GDP"
+superavit$Superavit_as_percentage_of_GDP=as.numeric(superavit$Superavit_as_percentage_of_GDP)
+str(superavit)
+#Limpieza Tasa inflacion
+inflation_rate=inflation_rate[,-c(1,4)]
+names(inflation_rate)[names(inflation_rate)=="(%)"]="Inflation_Rate"
+inflation_rate$Inflation_Rate=gsub("[,]","",inflation_rate$Inflation_Rate)
+inflation_rate$Inflation_Rate=as.numeric(inflation_rate$Inflation_Rate)
+str(inflation_rate)
+#Limpieza deuda externa
+debt=debt[,-c(1,4)]
+names(debt)[names(debt)=="Debt - external"]="External_Debt"
+debt$External_Debt=gsub("[,]","",debt$External_Debt)
+debt$External_Debt=gsub("[$]","",debt$External_Debt)
+debt$External_Debt=as.numeric(debt$External_Debt)
+str(debt)
+#Limpieza Gas natural exportado
+gas_export=gas_export[,-c(1,4)]
+names(gas_export)[names(gas_export)=="(cu m)"]="Gas_export_cubic_meters"
+gas_export$Gas_export_cubic_meters=gsub("[,]","",gas_export$Gas_export_cubic_meters)
+gas_export$Gas_export_cubic_meters=as.numeric(gas_export$Gas_export_cubic_meters)
+str(gas_export)
+#Limpieza gastos militares
+militar$Rank=NULL
+militar$`Date of Information`=NULL
+names(militar)[names(militar)=="(% of GDP)"]="Military spending as percentage of GDP"
+militar$`Military spending as percentage of GDP`=as.numeric(militar$`Military spending as percentage of GDP`)
+str(militar)
+#Limpieza para Impuestos 
+tax$Rank=NULL
+tax$`Date of Information`=NULL
+names(tax)[names(tax)=="(% (of GDP))"]="Taxes as percentage of GDP"
+tax$`Taxes as percentage of GDP`=as.numeric(tax$`Taxes as percentage of GDP`)
+str(tax)
+#Limpieza para Indice Democracia
+library(stringr)
+names(demo_index)=str_split(names(demo_index),">>",simplify = T)[,1]
+names(demo_index)=gsub("Â","",names(demo_index))
+demo_index$`Country `=gsub("Â","",demo_index$`Country `)
+demo_index=demo_index[,-c(1)]
+demo_index[,-c(1,8,9)]=lapply(demo_index[,-c(1,8,9)], as.numeric)
+demo_index$`Country `=trimws(demo_index$`Country `,whitespace = "[\\h\\v]")
+names(demo_index)=trimws(names(demo_index),whitespace = "[\\h\\v]")
+names(demo_index)[names(demo_index)=="Score"]="ScoreDemocracy"
+demo_index[,c(9)]=as.factor(demo_index[,c(9)])
+library(dplyr)
+demo_index$Regimetype= recode(demo_index$Regimetype,
+       'Full democracy'='4FullDemocracy',
+       'Flawed democracy'='3FlawedDemocracy',
+       'Hybrid regime'='2Hybrid regime',
+       'Authoritarian'='1Authoritarian')
+demo_index$Regimetype=as.ordered(demo_index$Regimetype)
+str(demo_index)
+```
+##### MERGES #####
+```{r}
+#Cambio de Nombres
+demo_index[demo_index$Country=="Cape Verde",'Country']="Cabo Verde"
+demo_index[demo_index$Country=="Czech Republic",'Country']="Czechia"
+wpi[wpi$Country=="Czech Republic",'Country']="Czechia"
+wpi[wpi$Country=="Dominican Rep.",'Country']="Dominican Republic"
+demo_index[demo_index$Country=="South Korea",'Country']="Korea, South"
+wpi[wpi$Country=="Korea, Rep.",'Country']="Korea, South"
+wpi[wpi$Country=="Kyrgyz Republic",'Country']="Kyrgyzstan"
+militar=militar[-c(117),] #eliminamos macedonia antiguo de la data
+militar[militar$Country=="North Macedonia",'Country']="Macedonia"
+demo_index[demo_index$Country=="North Macedonia",'Country']="Macedonia"
+wpi[wpi$Country=="Macedonia, FYR",'Country']="Macedonia"
+wpi[wpi$Country=="Slovak Republic",'Country']="Slovakia"
+datatec[datatec$Country=="Egypt, Arab Rep.",'Country']="Egypt"
+datatec[datatec$Country=="Venezuela, RB",'Country']="Venezuela"
+datatec[datatec$Country=="Kyrgyz Republic",'Country']="Kyrgyzstan"
+datatec[datatec$Country=="Russian",'Country']="Russia"
+datatec[datatec$Country=="Korea, Rep.",'Country']="Korea, South"
+datatec[datatec$Country=="North Macedonia",'Country']="Macedonia"
+datatec[datatec$Country=="Slovak Republic",'Country']="Slovakia"
+compindex[compindex$Country=="Czech Republic",'Country']="Czechia"
+compindex[compindex$Country=="Cape Verde",'Country']="Cabo Verde"
+compindex[compindex$Country=="Iran, Islamic Rep.",'Country']="Iran"
+compindex[compindex$Country=="Korea, Rep.",'Country']="Korea, South"
+compindex[compindex$Country=="Kyrgyz Republic",'Country']="Kyrgyzstan"
+compindex[compindex$Country=="Macedonia, FYR",'Country']="Macedonia"
+compindex[compindex$Country=="Russian Federation",'Country']="Russia"
+compindex[compindex$Country=="Slovak Republic",'Country']="Slovakia"
+compindex[compindex$Country=="Viet Nam",'Country']="Vietnam"
+```
+
+```{r}
+#### MERGES OWO ####
+MyMerge2 <- function(x, y){
+  df <- merge(x, y)
+  return(df)}
+
+dataBigLigas <- Reduce(MyMerge2, list(compindex,datatec,debt,demo_index,electricity,gas_export,industry_growth,inflation_rate,militar,oilexport,stock_IED,superavit,tax,wpi))
+
+```
+
+
+
+
+
+
+
+
