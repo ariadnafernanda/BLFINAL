@@ -1,0 +1,12 @@
+```{r}
+
+library(sp)
+library(geojsonio)
+library(rgdal)
+
+fromGit="https://github.com/ariadnafernanda/BLFINAL/blob/master/custom2.geo.json?raw=true" # link desde github
+
+MAP <- rgdal::readOGR(fromGit,stringsAsFactors = FALSE)
+plot(MAP, border='grey')
+```
+
