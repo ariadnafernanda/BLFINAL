@@ -1,0 +1,30 @@
+```{r}
+
+library(sp)
+library(geojsonio)
+library(rgdal)
+
+fromGit="https://github.com/ariadnafernanda/BLFINAL/blob/master/custom2.geo.json?raw=true" # link desde github
+
+MAP <- rgdal::readOGR(fromGit,stringsAsFactors = FALSE)
+plot(MAP, border='grey')
+```
+
+```{r}
+MAP[MAP@data$name_long=="Cape Verde",'name_long']="Cabo Verde"
+MAP[MAP@data$name_long=="Czech Republic",'name_long']="Czechia"
+MAP[MAP@data$name_long=="Republic of Korea",'name_long']="Korea, South"
+MAP[MAP@data$name_long=="Russian Federation",'name_long']="Russia"
+```
+
+```{r}
+FullPower=merge(MAP@data,dataBigLigas,by.x="name_long",by.y="Country")
+```
+
+
+```{r}
+myColors=c('orange','grey','green') # para 1,2 ,3
+plot(MAP,col='black', main='Niveles de poder del Mundo usando clusters')
+plot(FullPower,col=myColors[FullPower$cluster],add=T,border=NA)
+```
+
